@@ -1,9 +1,12 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export function MenuToggleIcon({ open, className, duration = 300 }: { open: boolean, className?: string, duration?: number }) {
+export function MenuToggleIcon({ open, onClick, className, duration = 300 }: { open: boolean, onClick?: () => void, className?: string, duration?: number }) {
   return (
-    <svg
+    <button onClick={onClick} className="focus:outline-none p-1">
+      <svg
+        width="24"
+        height="24"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -35,5 +38,6 @@ export function MenuToggleIcon({ open, className, duration = 300 }: { open: bool
         className={cn("transition-all origin-center", open ? "-rotate-45 -translate-y-[6px]" : "rotate-0 translate-y-0")}
       />
     </svg>
+    </button>
   );
 }
