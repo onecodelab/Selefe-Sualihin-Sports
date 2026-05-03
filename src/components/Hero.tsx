@@ -1,7 +1,6 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -23,7 +22,8 @@ const Hero = () => {
       y: 0,
       transition: {
         duration: 0.8,
-        ease: [0.16, 1, 0.3, 1],
+        ease: [0.16, 1, 0.3, 1] as const,
+
       },
     },
   };
