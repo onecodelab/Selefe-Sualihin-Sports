@@ -3,12 +3,44 @@
 @layer base {
   :root {
     --background: #ffffff;
-    --foreground: #373a46;
+    --foreground: #1d1d1f;
+    --apple-blue: #0071e3;
+    --apple-link: #0066cc;
+    --apple-light: #f5f5f7;
+    --apple-dark: #1d1d1f;
   }
 }
 
 body {
-  font-family: 'Geist', sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  color: #1d1d1f;
+  letter-spacing: -0.015em;
+  -webkit-font-smoothing: antialiased;
 }
+
+.font-apple-display {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+  letter-spacing: -0.022em;
+  font-weight: 700;
+}
+
+.font-apple-text {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+  letter-spacing: -0.011em;
+}
+
+/* For legacy support of Geist/Instrument if used elsewhere */
+.font-geist, .font-instrument {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

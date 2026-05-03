@@ -1,0 +1,225 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+type Language = 'en' | 'am';
+
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
+  t: (key: string) => string;
+}
+
+const translations: Record<Language, Record<string, string>> = {
+  en: {
+    'nav.home': 'Home',
+    'nav.facilities': 'Facilities',
+    'nav.pricing': 'Pricing',
+    'nav.rules': 'Rules',
+    'nav.contact': 'Contact',
+    'nav.admin': 'Admin Panel',
+    'nav.dashboard': 'Dashboard',
+    'nav.signout': 'Sign Out',
+    'nav.signin': 'Sign In',
+    'nav.book': 'Book Now',
+    'hero.title': 'The Perfect Pitch for Your Next Match',
+    'hero.subtitle': 'Book high-quality sports facilities in seconds. Join the community of players at Selefe Sualihin.',
+    'hero.cta': 'Reserve Your Session',
+    'hero.cta.primary': 'Reserve Your Session',
+    'hero.cta.secondary': 'View Pricing',
+    'login.welcome': 'Welcome Back',
+    'login.subtitle': 'Enter your details to access your account',
+    'login.email': 'Email Address',
+    'login.password': 'Password',
+    'login.button': 'Access Account',
+    'login.register': 'New users will be registered automatically.',
+    'dashboard.title': 'My Bookings',
+    'dashboard.welcome': 'Welcome back',
+    'dashboard.new': 'New Booking',
+    'dashboard.total': 'Total Bookings',
+    'dashboard.confirmed': 'Confirmed',
+    'dashboard.next': 'Next Game',
+    'dashboard.activity': 'Recent Activity',
+    'dashboard.viewAll': 'View All',
+    'dashboard.pitch': 'Pitch Info',
+    'dashboard.team': 'Team',
+    'dashboard.date': 'Date & Time',
+    'dashboard.status': 'Status',
+    'dashboard.amount': 'Amount',
+    'dashboard.noBookings': 'No bookings found yet.',
+    'dashboard.bookFirst': 'Book your first session',
+    'admin.overview': 'Overview',
+    'admin.bookings': 'Manage Bookings',
+    'admin.schedule': 'Weekly Schedule',
+    'admin.users': 'User Management',
+    'admin.revenue': 'Total Revenue',
+    'admin.active': 'Active Sessions',
+    'map.3d': '3D View',
+    'map.reset': 'Reset',
+    'map.pitch': 'Pitch',
+    'map.bearing': 'Bearing',
+    'schedule.title': 'Schedule Planner',
+    'schedule.subtitle': 'Control which time slots are available for each day',
+    'booking.title': 'Select Date & Time',
+    'booking.step1': 'Contact',
+    'booking.step2': 'Time',
+    'booking.step3': 'Review',
+    'booking.contact.title': 'Contact Information',
+    'booking.name': 'Full Name',
+    'booking.name.placeholder': 'Enter your name',
+    'booking.team': 'Team Name',
+    'booking.team.placeholder': 'Enter your team name',
+    'booking.phone': 'Phone Number',
+    'booking.phone.placeholder': '09xx xxx xxx',
+    'booking.continue': 'Continue to Selection',
+    'booking.datetime.title': 'Select Date & Time',
+    'booking.available': 'Available',
+    'booking.back': 'Back',
+    'booking.review': 'Review Booking',
+    'booking.confirm.title': 'Confirm Your Booking',
+    'booking.confirm.team': 'Team',
+    'booking.confirm.date': 'Date',
+    'booking.confirm.time': 'Time',
+    'booking.payment.proceed': 'Confirm & Proceed',
+    'booking.payment.back': 'Back to Selection',
+    'booking.success.title': 'Booking Successful!',
+    'booking.success.desc': 'Your pitch reservation has been received. Check your dashboard for confirmation status.',
+    'pricing.title': 'Choose Your Play Time',
+    'pricing.subtitle': 'Flexible pricing for every team and schedule.',
+    'pricing.weekday1': 'Weekday 1 Hour',
+    'pricing.weekday2': 'Weekday 2 Hours',
+    'pricing.weekend1': 'Weekend 1 Hour',
+    'pricing.weekend2': 'Weekend 2 Hours',
+    'pricing.weekday.desc': 'Weekdays except Tuesday',
+    'pricing.weekend.desc': 'Saturday and Sunday',
+    'pricing.currency': 'Birr',
+    'pricing.book': 'Book now',
+    'footer.desc': 'Experience world-class sports facilities at Selefe Sualihin. We provide premium pitches for football and other sports activities.',
+    'footer.location': 'Our Location',
+    'footer.location.desc': 'Located at the heart of the community, Selefe Sualihin Masjid Sports Complex.',
+    'footer.contact': 'Contact Us',
+    'footer.rights': '© 2024 Selefe Sualihin Sports. All rights reserved.',
+    'footer.privacy': 'Privacy Policy',
+    'footer.terms': 'Terms of Service',
+    'footer.refund': 'Refund Policy',
+  },
+  am: {
+    'nav.home': 'ዋና ገጽ',
+    'nav.facilities': 'አገልግሎቶች',
+    'nav.pricing': 'ዋጋዎች',
+    'nav.rules': 'ደንቦች',
+    'nav.contact': 'እኛን ለማግኘት',
+    'nav.admin': 'የአስተዳዳሪ ክፍል',
+    'nav.dashboard': 'ዳሽቦርድ',
+    'nav.signout': 'ውጣ',
+    'nav.signin': 'ግባ',
+    'nav.book': 'አሁኑኑ ይያዙ',
+    'hero.title': 'ለቀጣዩ ጨዋታዎ ምርጥ ሜዳ',
+    'hero.subtitle': 'ከፍተኛ ጥራት ያላቸውን የስፖርት ሜዳዎች በሰከንዶች ውስጥ ይያዙ። ሰለፈ ሷሊሂን ይቀላቀሉ።',
+    'hero.cta': 'ቦታዎን ይያዙ',
+    'hero.cta.primary': 'ቦታዎን ይያዙ',
+    'hero.cta.secondary': 'ዋጋዎችን ይመልከቱ',
+    'login.welcome': 'እንኳን ደህና መጡ',
+    'login.subtitle': 'ወደ መለያዎ ለመግባት ዝርዝሮችዎን ያስገቡ',
+    'login.email': 'የኢሜል አድራሻ',
+    'login.password': 'የይለፍ ቃል',
+    'login.button': 'ግባ',
+    'login.register': 'አዲስ ተጠቃሚዎች በራሱ ይመዘገባሉ።',
+    'dashboard.title': 'የእኔ ቦታዎች',
+    'dashboard.welcome': 'እንኳን ደህና መጡ',
+    'dashboard.new': 'አዲስ ቦታ ይያዙ',
+    'dashboard.total': 'ጠቅላላ ቦታዎች',
+    'dashboard.confirmed': 'የተረጋገጡ',
+    'dashboard.next': 'ቀጣይ ጨዋታ',
+    'dashboard.activity': 'የቅርብ ጊዜ እንቅስቃሴዎች',
+    'dashboard.viewAll': 'ሁሉንም ይመልከቱ',
+    'dashboard.pitch': 'የሜዳ መረጃ',
+    'dashboard.team': 'ቡድን',
+    'dashboard.date': 'ቀን እና ሰዓት',
+    'dashboard.status': 'ሁኔታ',
+    'dashboard.amount': 'ዋጋ',
+    'dashboard.noBookings': 'እስካሁን ምንም የተያዘ ቦታ የለም።',
+    'dashboard.bookFirst': 'የመጀመሪያውን ቦታ አሁን ይያዙ',
+    'admin.overview': 'አጠቃላይ እይታ',
+    'admin.bookings': 'ቦታዎችን ያስተዳድሩ',
+    'admin.schedule': 'ሳምንታዊ የጊዜ ሰሌዳ',
+    'admin.users': 'ተጠቃሚዎችን ያስተዳድሩ',
+    'admin.revenue': 'ጠቅላላ ገቢ',
+    'admin.active': 'ንቁ ክፍለ ጊዜዎች',
+    'map.3d': '3D እይታ',
+    'map.reset': 'እንደገና ያስጀምሩ',
+    'map.pitch': 'ሜዳ',
+    'map.bearing': 'አቅጣጫ',
+    'schedule.title': 'የጊዜ ሰሌዳ ማቀጃ',
+    'schedule.subtitle': 'ለእያንዳንዱ ቀን የትኞቹ የሰዓት ክፍተቶች እንደሚገኙ ይቆጣጠሩ',
+    'booking.title': 'ቀን እና ሰዓት ይምረጡ',
+    'booking.step1': 'መረጃ',
+    'booking.step2': 'ሰዓት',
+    'booking.step3': 'ክለሳ',
+    'booking.contact.title': 'የመገናኛ መረጃ',
+    'booking.name': 'ሙሉ ስም',
+    'booking.name.placeholder': 'ስምዎን ያስገቡ',
+    'booking.team': 'የቡድን ስም',
+    'booking.team.placeholder': 'የቡድንዎን ስም ያስገቡ',
+    'booking.phone': 'ስልክ ቁጥር',
+    'booking.phone.placeholder': '09xxxxxxxx',
+    'booking.continue': 'ወደ ምርጫ ይቀጥሉ',
+    'booking.datetime.title': 'ቀን እና ሰዓት ይምረጡ',
+    'booking.available': 'ክፍት ነው',
+    'booking.back': 'ተመለስ',
+    'booking.review': 'ቦታውን ይከልሱ',
+    'booking.confirm.title': 'ቦታዎን ያረጋግጡ',
+    'booking.confirm.team': 'ቡድን',
+    'booking.confirm.date': 'ቀን',
+    'booking.confirm.time': 'ሰዓት',
+    'booking.payment.proceed': 'አረጋግጥ እና ቀጥል',
+    'booking.payment.back': 'ወደ ምርጫ ተመለስ',
+    'booking.success.title': 'ቦታው በተሳካ ሁኔታ ተይዟል!',
+    'booking.success.desc': 'የሜዳ ማስያዣ ጥያቄዎ ደርሶናል። ሁኔታውን በዳሽቦርድዎ ላይ መከታተል ይችላሉ።',
+    'pricing.title': 'የጨዋታ ጊዜዎን ይምረጡ',
+    'pricing.subtitle': 'ለእያንዳንዱ ቡድን እና የጊዜ ሰሌዳ የሚሆን ተለዋዋጭ ዋጋዎች።',
+    'pricing.weekday1': 'የሳምንት ቀናት 1 ሰዓት',
+    'pricing.weekday2': 'የሳምንት ቀናት 2 ሰዓት',
+    'pricing.weekend1': 'የሳምንት መጨረሻ 1 ሰዓት',
+    'pricing.weekend2': 'የሳምንት መጨረሻ 2 ሰዓት',
+    'pricing.weekday.desc': 'ከማክሰኞ በስተቀር',
+    'pricing.weekend.desc': 'ቅዳሜ እና እሁድ',
+    'pricing.currency': 'ብር',
+    'pricing.book': 'አሁኑኑ ይያዙ',
+    'footer.desc': 'በሰለፈ ሷሊሂን አለም አቀፍ ደረጃቸውን የጠበቁ የስፖርት አገልግሎቶችን ያግኙ። ለኳስ እና ለሌሎች ስፖርቶች ምቹ ሜዳዎችን እናቀርባለን።',
+    'footer.location': 'አድራሻችን',
+    'footer.location.desc': 'በማህበረሰቡ እምብርት ላይ የሚገኘው የሰለፈ ሷሊሂን መስጂድ ስፖርት ኮምፕሌክስ።',
+    'footer.contact': 'እኛን ለማግኘት',
+    'footer.rights': '© 2024 ሰለፈ ሷሊሂን ስፖርት። መብቱ በህግ የተጠበቀ ነው።',
+    'footer.privacy': 'የግላዊነት ፖሊሲ',
+    'footer.terms': 'የአገልግሎት ውል',
+    'footer.refund': 'የገንዘብ ተመላሽ ፖሊሲ',
+  }
+};
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [language, setLanguage] = useState<Language>(() => {
+    return (localStorage.getItem('language') as Language) || 'en';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('language', language);
+    document.documentElement.lang = language;
+  }, [language]);
+
+  const t = (key: string) => {
+    return translations[language][key] || key;
+  };
+
+  return (
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) throw new Error('useLanguage must be used within LanguageProvider');
+  return context;
+};

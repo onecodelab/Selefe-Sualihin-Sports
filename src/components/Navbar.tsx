@@ -1,33 +1,214 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { useLanguage } from '../contexts/LanguageContext';
+import { Button, buttonVariants } from './ui/button';
+import { cn } from '../lib/utils';
+import { MenuToggleIcon } from './ui/menu-toggle-icon';
+import { useScroll } from './ui/use-scroll';
+import { createPortal } from 'react-dom';
+import { Globe } from 'lucide-react';
 
+export default function Navbar() {
+	const [open, setOpen] = React.useState(false);
+	const scrolled = useScroll(10);
+	const navigate = useNavigate();
+	const { user, signOut, isAdmin } = useAuth();
+	const { language, setLanguage, t } = useLanguage();
 
-const Navbar = () => {
-  const navigate = useNavigate();
+	const links = [
+		{ label: t('nav.facilities'), href: '#facilities' },
+		{ label: t('nav.pricing'), href: '#pricing' },
+		{ label: t('nav.rules'), href: '#rules' },
+		{ label: t('nav.contact'), href: '#contact' },
+	];
 
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 flex items-center justify-between bg-white/50 backdrop-blur-md border-b border-white/20">
-      <div 
-        className="font-geist font-bold text-xl cursor-pointer flex items-center gap-2"
-        onClick={() => navigate('/')}
-      >
-        <span className="text-[#373a46]">Selefe Sualihin</span>
-        <span className="font-instrument italic text-green-700">Sports</span>
-      </div>
+	React.useEffect(() => {
+		if (open) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = '';
+		}
+		return () => {
+			document.body.style.overflow = '';
+		};
+	}, [open]);
 
-      <div className="hidden md:flex items-center gap-8 font-geist text-sm text-[#373a46] font-medium opacity-80">
-        <a href="#facilities" className="hover:text-black transition-colors">Facilities</a>
-        <a href="#rules" className="hover:text-black transition-colors">Rules</a>
-        <a href="#contact" className="hover:text-black transition-colors">Contact</a>
-      </div>
+	return (
+		<header
+			className={cn('fixed top-0 z-50 w-full border-b border-transparent transition-all', {
+				'bg-white/80 backdrop-blur-lg border-gray-200/50 shadow-sm':
+					scrolled || open,
+			})}
+		>
+			<nav className="mx-auto flex h-20 w-full max-w-7xl items-center justify-between px-6">
+				<div 
+					className="cursor-pointer flex items-center gap-3 group"
+					onClick={() => {
+						navigate('/');
+						setOpen(false);
+					}}
+				>
+					<img src="/assets/logo.png" alt="Selefe Sualihin Sports" className="h-14 w-auto object-contain transition-transform group-hover:scale-105" />
+					<div className="flex flex-col">
+						<span className="font-geist font-bold text-lg text-[#1d1d1f] leading-tight">Selefe Sualihin</span>
+						<span className="font-geist font-medium text-[10px] tracking-[0.2em] uppercase text-[#0071e3] opacity-70">Sports Booking</span>
+					</div>
+				</div>
 
-      <button
-        onClick={() => navigate('/book')}
-        className="bg-[#121212] text-white font-geist font-medium px-5 py-2.5 rounded-full text-sm shadow-md transition-transform hover:scale-105 active:scale-95"
-      >
-        Book Now
-      </button>
-    </nav>
-  );
-};
+				<div className="hidden items-center gap-4 md:flex">
+					{/* Language Toggle */}
+					<button 
+						onClick={() => setLanguage(language === 'en' ? 'am' : 'en')}
+						className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f5f5f7] text-[#1d1d1f] hover:bg-[#e8e8ed] transition-all font-geist text-xs font-bold mr-2 border border-transparent"
+					>
+						<Globe size={14} />
+						{language === 'en' ? 'አማርኛ' : 'English'}
+					</button>
 
-export default Navbar;
+					{links.map((link) => (
+						<a 
+							key={link.label} 
+							className={cn(buttonVariants({ variant: 'ghost' }), "font-geist text-sm font-medium text-[#1d1d1f] hover:text-[#0071e3]")} 
+							href={link.href}
+						>
+							{link.label}
+						</a>
+					))}
+					{user ? (
+						<>
+							{isAdmin && (
+								<Button 
+									className="rounded-full bg-[#1d1d1f] hover:bg-black text-white text-xs px-4"
+									onClick={() => navigate('/admin')}
+								>
+									⚡ {t('nav.admin')}
+								</Button>
+							)}
+							{isAdmin && (
+								<Button 
+									variant="outline" 
+									className="rounded-full border-[#0071e3] text-[#0071e3] hover:bg-[#0071e3] hover:text-white"
+									onClick={() => navigate('/dashboard')}
+								>
+									{t('nav.dashboard')}
+								</Button>
+							)}
+							<Button 
+								variant="ghost"
+								className="text-[#1d1d1f]/60 hover:text-red-500"
+								onClick={signOut}
+							>
+								{t('nav.signout')}
+							</Button>
+						</>
+					) : (
+						<>
+							<Button 
+								variant="outline" 
+								className="rounded-full border-[#0071e3] text-[#0071e3] hover:bg-[#0071e3] hover:text-white"
+								onClick={() => navigate('/login')}
+							>
+								{t('nav.signin')}
+							</Button>
+							<Button 
+								className="rounded-full bg-[#121212] hover:bg-[#2a2a2a] text-white"
+								onClick={() => navigate('/book')}
+							>
+								{t('nav.book')}
+							</Button>
+						</>
+					)}
+				</div>
+
+				<div className="flex items-center gap-2 md:hidden">
+					<button 
+						onClick={() => setLanguage(language === 'en' ? 'am' : 'en')}
+						className="p-2 rounded-lg bg-gray-50 text-gray-600 border border-gray-100"
+					>
+						<Globe size={18} />
+					</button>
+					<MenuToggleIcon open={open} onClick={() => setOpen(!open)} />
+				</div>
+			</nav>
+
+			{open &&
+				createPortal(
+					<div className="fixed inset-0 top-20 z-[60] bg-white px-6 py-10 md:hidden overflow-y-auto">
+						<div className="flex flex-col gap-6">
+							{links.map((link) => (
+								<a
+									key={link.label}
+									href={link.href}
+									onClick={() => setOpen(false)}
+									className="text-3xl font-geist font-black text-gray-900 tracking-tighter"
+								>
+									{link.label}
+								</a>
+							))}
+							<div className="h-px bg-gray-100 my-4" />
+							{user ? (
+								<>
+									{isAdmin && (
+										<Button 
+											className="w-full h-14 text-lg rounded-2xl bg-gray-900 text-white"
+											onClick={() => {
+												navigate('/admin');
+												setOpen(false);
+											}}
+										>
+											⚡ {t('nav.admin')}
+										</Button>
+									)}
+									{isAdmin && (
+										<Button 
+											className="w-full h-14 text-lg rounded-2xl bg-[#0071e3] text-white"
+											onClick={() => {
+												navigate('/dashboard');
+												setOpen(false);
+											}}
+										>
+											{t('nav.dashboard')}
+										</Button>
+									)}
+									<Button 
+										variant="ghost"
+										className="w-full text-gray-500"
+										onClick={() => {
+											signOut();
+											setOpen(false);
+										}}
+									>
+										{t('nav.signout')}
+									</Button>
+								</>
+							) : (
+								<div className="flex flex-col gap-4">
+									<Button 
+										className="w-full h-14 text-lg rounded-2xl bg-[#1d1d1f] text-white"
+										onClick={() => {
+											navigate('/book');
+											setOpen(false);
+										}}
+									>
+										{t('nav.book')}
+									</Button>
+									<Button 
+										variant="outline"
+										className="w-full h-14 text-lg rounded-2xl border-[#0071e3] text-[#0071e3]"
+										onClick={() => {
+											navigate('/login');
+											setOpen(false);
+										}}
+									>
+										{t('nav.signin')}
+									</Button>
+								</div>
+							)}
+						</div>
+					</div>,
+					document.body
+				)}
+		</header>
+	);
+}
