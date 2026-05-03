@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from './Navbar';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -32,7 +31,6 @@ const PricingPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] flex flex-col pt-24 pb-12">
-      <Navbar />
       
       <div className="max-w-[980px] w-full mx-auto px-6 mt-10">
         <div className="text-center mb-16">

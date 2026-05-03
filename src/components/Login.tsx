@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import Navbar from './Navbar';
 import { motion } from 'framer-motion';
 import { LogIn, Mail, Lock } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -70,7 +69,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] flex flex-col pt-24 pb-12">
-      <Navbar />
       
       <div className="flex-1 flex items-center justify-center px-6">
         <motion.div 

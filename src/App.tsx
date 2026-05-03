@@ -22,11 +22,11 @@ const PricingSection = lazy(() => import('./components/PricingSection'));
 const Login = lazy(() => import('./components/Login'));
 const Dashboard = lazy(() => import('./components/Dashboard'));
 
-// Lazy load admin components
 const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
 const AdminOverview = lazy(() => import('./components/admin/AdminOverview'));
 const AdminBookings = lazy(() => import('./components/admin/AdminBookings'));
 const AdminSchedule = lazy(() => import('./components/admin/AdminSchedule'));
+const NotFound = () => <Navigate to="/" replace />;
 
 // Loading spinner
 const LoadingSpinner = () => (
@@ -59,7 +59,58 @@ function App() {
             <ScrollToTop />
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
-                {/* ... existing routes ... */}
+                <Route path="/" element={
+                  <>
+                    <Navbar />
+                    <Hero />
+                    <PricingSection />
+                    <Footer />
+                  </>
+                } />
+                <Route path="/book" element={
+                  <>
+                    <Navbar />
+                    <BookingPage />
+                    <Footer />
+                  </>
+                } />
+                <Route path="/pricing" element={
+                  <>
+                    <Navbar />
+                    <PricingPage />
+                    <Footer />
+                  </>
+                } />
+                <Route path="/login" element={
+                  <>
+                    <Navbar />
+                    <Login />
+                    <Footer />
+                  </>
+                } />
+                
+                {/* Protected Dashboard */}
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Navbar />
+                    <Dashboard />
+                    <Footer />
+                  </ProtectedRoute>
+                } />
+
+                {/* Admin Routes */}
+                <Route path="/admin" element={
+                  <ProtectedRoute adminOnly>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<AdminOverview />} />
+                  <Route path="bookings" element={<AdminBookings />} />
+                  <Route path="schedule" element={<AdminSchedule />} />
+                </Route>
+
+                {/* Catch all */}
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Suspense>
           </Router>

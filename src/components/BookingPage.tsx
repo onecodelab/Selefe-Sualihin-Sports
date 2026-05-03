@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
-import Navbar from './Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -181,7 +180,6 @@ const BookingPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f5f5f7] flex flex-col pt-24 pb-12">
-      <Navbar />
       
       <div className="max-w-[980px] w-full mx-auto px-6">
         {/* Timeline Progress */}
