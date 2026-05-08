@@ -7,11 +7,30 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ErrorBoundary from './components/ErrorBoundary';
 
-// Scroll to top component
+// Scroll to top component with smoother behavior
 const ScrollToTop = () => {
   const { pathname } = useLocation();
-  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
+  }, [pathname]);
   return null;
+};
+
+// Layout wrapper to ensure consistent structure and prevent footer 'jumping'
+const PageLayout = ({ children, hideFooter = false }: { children: React.ReactNode, hideFooter?: boolean }) => {
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        {children}
+      </main>
+      {!hideFooter && <Footer />}
+    </div>
+  );
 };
 
 // Lazy load public components
@@ -26,11 +45,10 @@ const AdminLayout = lazy(() => import('./components/admin/AdminLayout'));
 const AdminOverview = lazy(() => import('./components/admin/AdminOverview'));
 const AdminBookings = lazy(() => import('./components/admin/AdminBookings'));
 const AdminSchedule = lazy(() => import('./components/admin/AdminSchedule'));
-const NotFound = () => <Navigate to="/" replace />;
 
 // Loading spinner
 const LoadingSpinner = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-[#f5f5f7]">
+  <div className="flex flex-col items-center justify-center min-h-[60vh] bg-[#f5f5f7]">
     <div className="relative w-12 h-12">
       <div className="absolute inset-0 border-4 border-[#0071e3] opacity-20 rounded-full"></div>
       <div className="absolute inset-0 border-4 border-[#0071e3] border-t-transparent rounded-full animate-spin"></div>
@@ -60,41 +78,33 @@ function App() {
             <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 <Route path="/" element={
-                  <>
-                    <Navbar />
+                  <PageLayout>
                     <Hero />
                     <PricingSection />
-                    <Footer />
-                  </>
+                  </PageLayout>
                 } />
                 <Route path="/book" element={
-                  <>
-                    <Navbar />
+                  <PageLayout>
                     <BookingPage />
-                    <Footer />
-                  </>
+                  </PageLayout>
                 } />
                 <Route path="/pricing" element={
-                  <>
-                    <Navbar />
+                  <PageLayout>
                     <PricingPage />
-                    <Footer />
-                  </>
+                  </PageLayout>
                 } />
                 <Route path="/login" element={
-                  <>
-                    <Navbar />
+                  <PageLayout>
                     <Login />
-                    <Footer />
-                  </>
+                  </PageLayout>
                 } />
                 
                 {/* Protected Dashboard */}
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
-                    <Navbar />
-                    <Dashboard />
-                    <Footer />
+                    <PageLayout>
+                      <Dashboard />
+                    </PageLayout>
                   </ProtectedRoute>
                 } />
 
@@ -121,3 +131,4 @@ function App() {
 }
 
 export default App;
+

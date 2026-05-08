@@ -91,45 +91,48 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
+          <div className="bg-white p-5 sm:p-6 rounded-[24px] shadow-sm border border-gray-100 flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4">
-              <div className="bg-blue-50 p-3 rounded-2xl text-[#0071e3]">
-                <Calendar size={24} />
+              <div className="bg-blue-50 p-2.5 sm:p-3 rounded-2xl text-[#0071e3]">
+                <Calendar size={20} className="sm:w-6 sm:h-6" />
               </div>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('dashboard.total')}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black font-apple-display">{bookings.length}</span>
+              <span className="text-2xl sm:text-3xl font-black font-apple-display text-[#1d1d1f]">{bookings.length}</span>
             </div>
           </div>
           
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div className="bg-white p-5 sm:p-6 rounded-[24px] shadow-sm border border-gray-100 flex flex-col justify-between">
             <div className="flex justify-between items-start mb-4">
-              <div className="bg-green-50 p-3 rounded-2xl text-green-600">
-                <CheckCircle size={24} />
+              <div className="bg-green-50 p-2.5 sm:p-3 rounded-2xl text-green-600">
+                <CheckCircle size={20} className="sm:w-6 sm:h-6" />
               </div>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('dashboard.confirmed')}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black font-apple-display">
+              <span className="text-2xl sm:text-3xl font-black font-apple-display text-[#1d1d1f]">
                 {bookings.filter(b => b.status.toLowerCase() === 'confirmed').length}
               </span>
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+          <div className="bg-white p-5 sm:p-6 rounded-[24px] shadow-sm border border-gray-100 flex flex-col justify-between sm:col-span-2 lg:col-span-1">
             <div className="flex justify-between items-start mb-4">
-              <div className="bg-purple-50 p-3 rounded-2xl text-purple-600">
-                <Clock size={24} />
+              <div className="bg-purple-50 p-2.5 sm:p-3 rounded-2xl text-purple-600">
+                <Clock size={20} className="sm:w-6 sm:h-6" />
               </div>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('dashboard.next')}</span>
             </div>
             <div className="flex items-baseline gap-2">
-              <span className="text-lg font-bold font-apple-text text-gray-800">Saturday, 4:00 PM</span>
+              <span className="text-base sm:text-lg font-bold font-apple-text text-gray-800">
+                {bookings.length > 0 ? `${bookings[0].date}, ${bookings[0].time_slot.split(' ')[0]}` : 'No upcoming sessions'}
+              </span>
             </div>
           </div>
         </div>
+
 
         {/* Bookings Table/List */}
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">

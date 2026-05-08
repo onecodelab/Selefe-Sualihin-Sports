@@ -183,28 +183,29 @@ const BookingPage = () => {
       
       <div className="max-w-[980px] w-full mx-auto px-6">
         {/* Timeline Progress */}
-        <div className="flex items-center justify-between mb-12 relative">
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-black/5 -z-10 rounded-full"></div>
+        <div className="flex items-center justify-between mb-8 md:mb-12 relative px-2">
+          <div className="absolute left-0 top-[20px] w-full h-1 bg-black/5 -z-10 rounded-full"></div>
           <div 
-            className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#0071e3] -z-10 rounded-full transition-all duration-500 ease-in-out"
+            className="absolute left-0 top-[20px] h-1 bg-[#0071e3] -z-10 rounded-full transition-all duration-500 ease-in-out"
             style={{ width: `${((step - 1) / 3) * 100}%` }}
           ></div>
           
           {[1, 2, 3, 4].map((s) => (
-            <div key={s} className="flex flex-col items-center gap-2 bg-[#f5f5f7] px-2">
+            <div key={s} className="flex flex-col items-center gap-2 bg-[#f5f5f7] px-1 sm:px-2">
               <div 
-                className={`w-10 h-10 rounded-full flex items-center justify-center font-geist font-medium transition-colors duration-300 ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-geist text-sm sm:text-base font-medium transition-colors duration-300 ${
                   step >= s ? 'bg-[#0071e3] text-white' : 'bg-black/5 text-[#1d1d1f]'
                 }`}
               >
                 {s}
               </div>
-              <span className={`text-[12px] font-geist font-medium tracking-tight ${step >= s ? 'text-[#0071e3]' : 'text-[#1d1d1f] opacity-48'}`}>
+              <span className={`hidden sm:block text-[10px] sm:text-[12px] font-geist font-medium tracking-tight ${step >= s ? 'text-[#0071e3]' : 'text-[#1d1d1f] opacity-48'}`}>
                 {s === 1 ? t('booking.step1') : s === 2 ? t('booking.step2') : s === 3 ? t('booking.step3') : t('Done')}
               </span>
             </div>
           ))}
         </div>
+
 
         {/* Form Container */}
         <div className="bg-white rounded-[12px] shadow-[0px_5px_30px_0px_rgba(0,0,0,0.1)] p-6 md:p-12 overflow-hidden">

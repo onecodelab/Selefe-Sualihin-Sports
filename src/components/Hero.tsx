@@ -59,7 +59,7 @@ const Hero = () => {
           {/* Main Heading */}
           <motion.h1
             variants={itemVariants}
-            className="font-geist font-semibold text-[56px] leading-[1.07] tracking-tight text-white max-w-[980px]"
+            className="font-geist font-semibold text-[36px] md:text-[56px] leading-[1.07] tracking-tight text-white max-w-[980px]"
           >
             {t('hero.title')}
           </motion.h1>
