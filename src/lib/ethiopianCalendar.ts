@@ -45,10 +45,10 @@ function getJDN(date: Date): number {
 }
 
 function jdnToEthiopian(jdn: number): EthiopianDate {
-  const r = (jdn - 1723856) % 1461;
+  const r = (Math.floor(jdn) - 1723856) % 1461;
   const n = (r % 365) + 365 * Math.floor(r / 1460);
 
-  const year = 4 * Math.floor((jdn - 1723856) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460);
+  const year = 4 * Math.floor((Math.floor(jdn) - 1723856) / 1461) + Math.floor(r / 365) - Math.floor(r / 1460);
   const month = Math.floor(n / 30) + 1;
   const day = (n % 30) + 1;
 
@@ -59,6 +59,7 @@ function jdnToEthiopian(jdn: number): EthiopianDate {
     monthName: ethiopianMonths[month - 1]
   };
 }
+
 
 export const formatEthiopianFull = (date: Date): string => {
   const eth = toEthiopianDate(date);
