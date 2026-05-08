@@ -8,6 +8,7 @@ import { MenuToggleIcon } from './ui/menu-toggle-icon';
 import { useScroll } from './ui/use-scroll';
 import { createPortal } from 'react-dom';
 import { Globe } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Navbar() {
 	const [open, setOpen] = React.useState(false);
@@ -132,83 +133,91 @@ export default function Navbar() {
 				</div>
 			</nav>
 
-			{open &&
-				createPortal(
-					<div className="fixed inset-0 top-20 z-[60] bg-white px-6 py-10 md:hidden overflow-y-auto">
-						<div className="flex flex-col gap-6">
-							{links.map((link) => (
-								<a
-									key={link.label}
-									href={link.href}
-									onClick={() => setOpen(false)}
-									className="text-3xl font-geist font-black text-gray-900 tracking-tighter"
-								>
-									{link.label}
-								</a>
-							))}
-							<div className="h-px bg-gray-100 my-4" />
-							{user ? (
-								<>
-									{isAdmin && (
+			<AnimatePresence>
+				{open &&
+					createPortal(
+						<motion.div 
+							initial={{ opacity: 0, y: -20 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -20 }}
+							transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+							className="fixed inset-0 top-20 z-[60] bg-white px-6 py-10 md:hidden overflow-y-auto"
+						>
+							<div className="flex flex-col gap-6">
+								{links.map((link) => (
+									<a
+										key={link.label}
+										href={link.href}
+										onClick={() => setOpen(false)}
+										className="text-3xl font-geist font-black text-gray-900 tracking-tighter"
+									>
+										{link.label}
+									</a>
+								))}
+								<div className="h-px bg-gray-100 my-4" />
+								{user ? (
+									<>
+										{isAdmin && (
+											<Button 
+												className="w-full h-14 text-lg rounded-2xl bg-gray-900 text-white"
+												onClick={() => {
+													navigate('/admin');
+													setOpen(false);
+												}}
+											>
+												⚡ {t('nav.admin')}
+											</Button>
+										)}
+										{isAdmin && (
+											<Button 
+												className="w-full h-14 text-lg rounded-2xl bg-[#0071e3] text-white"
+												onClick={() => {
+													navigate('/dashboard');
+													setOpen(false);
+												}}
+											>
+												{t('nav.dashboard')}
+											</Button>
+										)}
 										<Button 
-											className="w-full h-14 text-lg rounded-2xl bg-gray-900 text-white"
+											variant="ghost"
+											className="w-full text-gray-500"
 											onClick={() => {
-												navigate('/admin');
+												signOut();
 												setOpen(false);
 											}}
 										>
-											⚡ {t('nav.admin')}
+											{t('nav.signout')}
 										</Button>
-									)}
-									{isAdmin && (
+									</>
+								) : (
+									<div className="flex flex-col gap-4">
 										<Button 
-											className="w-full h-14 text-lg rounded-2xl bg-[#0071e3] text-white"
+											className="w-full h-14 text-lg rounded-2xl bg-[#1d1d1f] text-white"
 											onClick={() => {
-												navigate('/dashboard');
+												navigate('/book');
 												setOpen(false);
 											}}
 										>
-											{t('nav.dashboard')}
+											{t('nav.book')}
 										</Button>
-									)}
-									<Button 
-										variant="ghost"
-										className="w-full text-gray-500"
-										onClick={() => {
-											signOut();
-											setOpen(false);
-										}}
-									>
-										{t('nav.signout')}
-									</Button>
-								</>
-							) : (
-								<div className="flex flex-col gap-4">
-									<Button 
-										className="w-full h-14 text-lg rounded-2xl bg-[#1d1d1f] text-white"
-										onClick={() => {
-											navigate('/book');
-											setOpen(false);
-										}}
-									>
-										{t('nav.book')}
-									</Button>
-									<Button 
-										variant="outline"
-										className="w-full h-14 text-lg rounded-2xl border-[#0071e3] text-[#0071e3]"
-										onClick={() => {
-											navigate('/login');
-											setOpen(false);
-										}}
-									>
-										{t('nav.signin')}
-									</Button>
-								</div>
-							)}
-						</div>
-					</div>,
-					document.body
-				)}
+										<Button 
+											variant="outline"
+											className="w-full h-14 text-lg rounded-2xl border-[#0071e3] text-[#0071e3]"
+											onClick={() => {
+												navigate('/login');
+												setOpen(false);
+											}}
+										>
+											{t('nav.signin')}
+										</Button>
+									</div>
+								)}
+							</div>
+						</motion.div>,
+						document.body
+					)}
+			</AnimatePresence>
 		</header>
 	);
 }
